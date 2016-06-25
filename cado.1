@@ -1,0 +1,67 @@
+.TH CADO 1 "June 23, 2016" "VirtualSquare Labs"
+.SH NAME
+cado \- Capability Ambient DO
+.SH SYNOPSIS
+.B cado
+[
+.I OPTIONS
+]
+[
+.I capability_list
+.I command
+[
+.I args
+]
+]
+
+.SH DESCRIPTION
+Cado permits to delegate capabilities to users.
+Cado is a capability based sudo. Sudo allows authorized users to run programs as root (or as another user),
+cado allows authorized users to run programs with specific (ambient) capabilities.
+
+Cado is more selective than sudo, users can be authorized to have only specific capabilities (and not others).
+
+\fIcapability_list\fR is a comma separated list of capability names or capability masks (exadecimal numbers).
+For brevity, the \fBcap_\fR prefix of capability names can be omitted (e.g. \fBnet_admin\fR and \fBcap_net_admin\fR
+have the same meaning).
+
+If it is allowed for the current user to run processes with the requested capabilities, the user is asked to
+type their password (or to authenticate themselves as required by pam).
+Once the authentication succeeds, \fBcado\fR executes the command granting the required ambient capabilities.
+
+The file /etc/cado.conf (see \fBcado.conf\fR(5)) defines which capabilities can be provided by \fBcado\fR to each user.
+Cado itself is not a seuid executable, it uses the capability mechanism and it has an options to
+set its own capabilities. So after each change in the /etc/cado.conf, the capability set should be
+recomputed by root using the command \fBcado -s\fR or \fBcado --setcap\fR.
+
+.SH OPTIONS
+.I cado
+accepts the following options:
+.TP
+\fB\-v
+.TQ
+\fB\-\-verbose
+run in verbose mode. \fBcado\fR shows the set of allowed capabilities, requested cababilities, unavailable capabilities and
+(in case of -s) the set of capabilities assigned to \fBcado.conf\fR itself.
+.TP
+\fB\-q
+.TQ
+\fB\-\-quiet
+do not fail in case the user asks for unavailable capabilities,  \fBcado.conf\fR in this case grants the intersection between the
+set of requested cababilities and the set of allowed capabilities
+.TP
+\fB\-s
+.TQ
+\fB\-\-setcap
+\fBcado\fR computes the miminal set of capability required by itself and sets the file capability of the cado executable.
+.TP
+\fB\-h
+.TQ
+\fB\-\-help
+print a short usage banner and exit.
+
+.SH SEE ALSO
+\fBcado.conf\fR(5),
+\fBcaprint\fR(1),
+\fBcapabilities\fR(7)
+

@@ -1,0 +1,55 @@
+.TH CAPRINT 1 "June 23, 2016" "VirtualSquare Labs"
+.SH NAME
+caprint \- Capability Ambient Print
+.SH SYNOPSIS
+.B caprint
+[
+OPTIONS
+]
+[
+.I pid
+]
+
+.SH DESCRIPTION
+\fBcaprint\fR shows the ambient capabilities of a running program (whose pid can be specified as an optional parameter, otherwise \fBcaprint\fR 
+shows the capabilities of caprint itself).
+
+.SH OPTIONS
+.I caprint
+accepts the following options:
+.TP
+\fB\-l
+.TQ
+\fB\-\-long
+run in verbose mode. \fBcaprint\fR shows the bitmask for each capability owned by the process and the resulting mask of the capability set.
+.TP
+\fB\-c
+.TQ
+\fB\-\-compact
+emit a compact output (a single line composed of a comma separated list of the capability short names). This output can be copied as a
+capability list for the command \fBcado\fR(1).
+.TP
+\fB\-p
+.TQ
+\fB\-\-prompt
+this option has been created to provide users with a suitable shell prompt to warn the users of the extra capabilities granted to that shell
+(and of the extra danger in case of running wrong commands).
+As an example, it is possible to set the \fBbash\fR prompt editing the \fB.bashrc\fR in the user's home directory:
+.nf
+
+      if which caprint >&/dev/null ; then
+        ambient=$(caprint -p)
+      fi
+
+      PS1='\\u@\\h:\\w\\$$ambient'
+
+.fi
+.TP
+\fB\-h
+.TQ
+\fB\-\-help
+print a short usage banner and exit.
+
+.SH SEE ALSO
+\fBcado\fR(1),
+\fBcapabilities\fR(7),

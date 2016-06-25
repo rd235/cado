@@ -1,0 +1,43 @@
+.TH CADO.CONF 5 "June 23, 2016" "VirtualSquare Labs"
+.SH NAME
+cado.conf \- Capability Ambient DO: configuration file
+
+.SH DESCRIPTION
+The \fB/etc/cado.conf\fR file is used to configure which ambient cabalities can be provided by \fBcado\fR to users.
+\fBcado\fR uses the capability cap_dac_read_search to access \fB/etc/cado.conf\fR, so this configuration does not
+need to be readable by users.
+
+All lines beginning with the sign '#' are comments.
+
+Non-comment lines have the following syntax
+.nf
+       \fIlist_of_capabilities\fB:\fI list_of_users_and_groups\fR
+.fi
+
+Both \fIlist_of_capabilities\fR and \fIlist_of_users_and_groups\fR are comma separated lists of identifiers.
+
+Items of \fIlist_of_capabilities\fR are capability names or capability masks (exadecimal numbers).
+For brevity, the \fBcap_\fR prefix of capability names can be omitted (e.g. \fBnet_admin\fR and \fBcap_net_admin\fR
+have the same meaning).
+
+Items of \fIlist_of_users_and_groups\fR are usernames or groupnames (groupnames must be prefexed by '@').
+
+Example of \fBcado.conf\fR file:
+
+.ni
+           # Capability Ambient DO configuration file
+           # cado.conf
+
+           net_admin: @netadmin,renzo
+           net_admin,net_bind_service,net_raw,net_broadcast: @vxvdex
+           cap_kill: renzo
+.fi
+
+In this example the renzo's processes can be granted (by \fBcado\fR) cap_net_admin and cap_kill.
+cap_net_admin can be acquired by processes owned by users belonging to the netadmin group.
+Users in vxvdex can provide their processes with a subset of cap_net_admin, cap_net_bind_service, cap_net_raw and cap_net_broadcast
+
+.SH SEE ALSO
+\fBcado\fR(1),
+\fBcaprint\fR(1),
+\fBcapabilities\fR(7)
