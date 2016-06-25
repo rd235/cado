@@ -30,7 +30,7 @@ type their password (or to authenticate themselves as required by pam).
 Once the authentication succeeds, \fBcado\fR executes the command granting the required ambient capabilities.
 
 The file /etc/cado.conf (see \fBcado.conf\fR(5)) defines which capabilities can be provided by \fBcado\fR to each user.
-Cado itself is not a seuid executable, it uses the capability mechanism and it has an options to
+Cado itself is not a setuid executable, it uses the capability mechanism and it has an option to
 set its own capabilities. So after each change in the /etc/cado.conf, the capability set should be
 recomputed by root using the command \fBcado -s\fR or \fBcado --setcap\fR.
 
