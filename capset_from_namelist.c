@@ -51,7 +51,7 @@ static int addcap(char *name, uint64_t *capset) {
 int capset_from_namelist(char *namelist, uint64_t *capset) {
 	int rv=0;
 	char *onecap;
-	char *tmptok;
+	char *tmptok = NULL;
 	for (; (onecap=strtok_r(namelist,",",&tmptok)) != NULL; namelist=NULL)
 		rv |= addcap(onecap,capset);
 	return rv;

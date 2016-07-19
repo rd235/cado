@@ -51,7 +51,8 @@ uint64_t get_authorized_caps(char **user_groups) {
 	f=fopen(CADO_CONF, "r");
 	if (f) {
 		char *line=NULL;
-		ssize_t len,n=0;
+		size_t n = 0;
+		ssize_t len = 0;
 		while ((len=getline(&line, &n, f)) > 0) {
 			//printf("%s",line);
 			char *scan=line;

@@ -30,6 +30,7 @@
 #include <capset_from_namelist.h>
 #include <read_conf.h>
 #include <set_ambient_cap.h>
+#include <inttypes.h>
 
 static void printcapset(uint64_t capset, char *indent) {
 	cap_value_t cap;
@@ -41,7 +42,7 @@ static void printcapset(uint64_t capset, char *indent) {
 		}
 	}
 	if (count > 1)
-		printf("%s   %016llx\n",indent,capset);
+		printf("%s   %016" PRIx64 "\n",indent,capset);
 }
 
 #define OPTSTRING "hqvs"
