@@ -67,7 +67,7 @@ int main(int argc, char*argv[])
 {
 	char *progname=basename(argv[0]);
 	char **user_groups=get_user_groups();
-	uint64_t okcaps=get_authorized_caps(user_groups);
+	uint64_t okcaps;
 	uint64_t reqcaps=0;
 	uint64_t grantcap=0;
 	int verbose=0;
@@ -95,7 +95,7 @@ int main(int argc, char*argv[])
 			fprintf(stderr, "setcap requires root access\n");
 			exit(2);
 		}
-		okcaps = get_authorized_caps(NULL);
+		okcaps = get_authorized_caps(NULL, -1LL);
 		okcaps |= 1ULL << CAP_DAC_READ_SEARCH;
 		if (verbose) {
 			printf("Capability needed by %s:\n", progname);
@@ -108,13 +108,12 @@ int main(int argc, char*argv[])
 		exit(0);
 	}
 		
-	if (verbose) {
+	if (verbose && (argc == optind)) {
+		okcaps=get_authorized_caps(user_groups, -1LL);
 		printf("Allowed ambient capabilities:\n");
 		printcapset(okcaps, "  ");
-	}
-
-	if (verbose && (argc == optind))
 		exit(0);
+	}
 
 	if (argc - optind < 2)
 		usage(progname);
@@ -126,6 +125,8 @@ int main(int argc, char*argv[])
 		printf("Requested ambient capabilities:\n");
 		printcapset(reqcaps, "  ");
 	}
+
+	okcaps=get_authorized_caps(user_groups, reqcaps);
 
 	if (reqcaps & ~okcaps) {
 		if (verbose) {

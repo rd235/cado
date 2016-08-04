@@ -13,6 +13,10 @@ Non-comment lines have the following syntax
 .nf
        \fIlist_of_capabilities\fB:\fI list_of_users_and_groups\fR
 .fi
+or
+.nf
+       \fIlist_of_capabilities\fB:\fI list_of_users_and_groups\fB:\fR \fIlist_of_auth_commands\fR
+.fi
 
 Both \fIlist_of_capabilities\fR and \fIlist_of_users_and_groups\fR are comma separated lists of identifiers.
 
@@ -22,15 +26,20 @@ have the same meaning).
 
 Items of \fIlist_of_users_and_groups\fR are usernames or groupnames (groupnames must be prefexed by '@').
 
+\fIlist_of_auth_commands\fR is a command or a list of commands separated by semicolon (;). If present, cado runs
+all the sequence of commands it grants the capabilities as defined in the current line only if all return zero as
+their exit status.
+
 Example of \fBcado.conf\fR file:
 
-.ni
-           # Capability Ambient DO configuration file
-           # cado.conf
-
-           net_admin: @netadmin,renzo
-           net_admin,net_bind_service,net_raw,net_broadcast: @vxvdex
-           cap_kill: renzo
+.nf
+	# Capability Ambient DO configuration file
+	# cado.conf
+	
+	net_admin: @netadmin,renzo: /usr/bin/logger cado net_admin $USER; /bin/echo OK
+	net_admin: @privatenet: /usr/local/lib/cado_autorize_privatenet
+	net_admin,net_bind_service,net_raw,net_broadcast: @vxvdex
+	cap_kill: renzo
 .fi
 
 In this example the renzo's processes can be granted (by \fBcado\fR) cap_net_admin and cap_kill.
