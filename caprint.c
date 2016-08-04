@@ -27,6 +27,7 @@
 #include <getopt.h>
 #include <libgen.h>
 #include <sys/capability.h>
+#include <inttypes.h>
 
 char *tag="CapAmb:\t";
 uint64_t get_capamb(pid_t pid) {
@@ -46,7 +47,9 @@ uint64_t get_capamb(pid_t pid) {
 		if (c == tag[status]) {
 			status++;
 			if (status == target) {
-				fscanf(f,"%llx",&capamb);
+				int fields = 0;
+				if ((fields = fscanf(f,"%" PRIx64 "",&capamb)) != 1)
+					fprintf(stderr, "WARNING: fscanf on %s return %d fields.\n", filename, fields);
 				break;
 			}
 		} else
@@ -126,6 +129,8 @@ int main(int argc, char *argv[]) {
 		if (prompt) printf("#");
 		if (compact) printf("\n");
 		if (longlist && count > 1)
-			printf("   %016llx\n",capamb);
+			printf("   %016" PRIx64 "\n",capamb);
 	}
+
+	return 0;
 }
