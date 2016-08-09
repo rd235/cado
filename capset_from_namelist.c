@@ -48,12 +48,16 @@ static int addcap(char *name, uint64_t *capset) {
 	}
 }
 
+/* convert a list of comma separated capability tags to a bitmask of capabilities */
+/* capset_from_namelist allows capability names with or without the "cap_" prefix. */
 int capset_from_namelist(char *namelist, uint64_t *capset) {
 	int rv=0;
 	char *onecap;
-	char *tmptok = NULL;
-	for (; (onecap=strtok_r(namelist,",",&tmptok)) != NULL; namelist=NULL)
-		rv |= addcap(onecap,capset);
+	char *tmptok;
+	char *spacetok;
+	*capset = 0;
+	for (; (onecap = strtok_r(namelist,",",&tmptok)) != NULL; namelist = NULL)
+		rv |= addcap(strtok_r(onecap," \t",&spacetok), capset);
 	return rv;
 }
 

@@ -27,13 +27,17 @@
 #include <pwd.h>
 #include <pam_check.h>
 
+/* call PAM to authorize the current user.
+	 usually this means to prompt the user for a password,
+	 but it can be configured using PAM */
+
 int pam_check(char *username)
 {
   pam_handle_t* pamh; 
   struct pam_conv pamc={.conv=&misc_conv, .appdata_ptr=NULL}; 
 	int rv;
 
-	pam_start ("capdo", username, &pamc, &pamh); 
+	pam_start ("cado", username, &pamc, &pamh); 
 	rv= pam_authenticate (pamh, 0);
 	pam_end (pamh, 0); 
 

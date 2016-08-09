@@ -36,6 +36,9 @@
 #define PR_CAP_AMBIENT_LOWER	3
 #endif
 
+/* set the ambient capabilities to match the bitmap capset.
+	 the capability #k is active if and only if the (k+1)-th least significative bit in capset is 1.
+	 (i.e. if and only if (capset & (1ULL << k)) is not zero. */
 void set_ambient_cap(uint64_t capset)
 {
 	cap_value_t cap;
@@ -59,6 +62,7 @@ void set_ambient_cap(uint64_t capset)
 	}
 }
 
+/* turn cap_dac_read_search on and off to have "extra" powers only when needed */
 void raise_cap_dac_read_search(void) {
 	cap_value_t cap=CAP_DAC_READ_SEARCH;
 	cap_t caps=cap_get_proc();

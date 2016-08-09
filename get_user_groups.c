@@ -27,11 +27,18 @@
 #include <grp.h>
 #include <pwd.h>
 
+/* if the user does not exist get_user_groups returns NULL,
+	 otherwise it returns a dynamic allocated array whose
+	 first element (0) is the username of the current user.
+	 The following elements are the names of all the groups the current user belongs to.
+	 A NULL element tags the end of the array */
 char **get_user_groups(void) {
 	uid_t uid=getuid();
 	struct passwd *pwd=getpwuid(uid);
 	int ngroups=0;
 	char **user_groups=NULL;
+	if (pwd == NULL)
+		return NULL;
 	getgrouplist(pwd->pw_name, pwd->pw_gid, NULL, &ngroups);
 	if (ngroups > 0) {
 		gid_t gids[ngroups];

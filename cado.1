@@ -26,13 +26,25 @@ For brevity, the \fBcap_\fR prefix of capability names can be omitted (e.g. \fBn
 have the same meaning).
 
 If it is allowed for the current user to run processes with the requested capabilities, the user is asked to
-type their password (or to authenticate themselves as required by pam).
+type their password (or to authenticate themselves as required by pam unless \fB-S\fR or \fB--scado\fR).
 Once the authentication succeeds, \fBcado\fR executes the command granting the required ambient capabilities.
 
 The file /etc/cado.conf (see \fBcado.conf\fR(5)) defines which capabilities can be provided by \fBcado\fR to each user.
 Cado itself is not a setuid executable, it uses the capability mechanism and it has an option to
 set its own capabilities. So after each change in the /etc/cado.conf, the capability set should be
 recomputed by root using the command \fBcado -s\fR or \fBcado --setcap\fR.
+
+When \fBcado\fR runs is scado mode (by the option \fB-S\fR or \fB--scado\fR), if
+.br
+\ \ - the current user is allowed to run processes with the requested capabilities, 
+.br 
+\ \ - the \fBcommand\fR argument is an absolute pathname and 
+.br 
+\ \ - there is a specific authorization line in the user's scado file,
+.br
+\fBcado\fR runs the command granting the required ambient capabilities without any further authentication request
+(it does not prompt for a password).
+.SP
 
 .SH OPTIONS
 .I cado
@@ -55,6 +67,12 @@ set of requested cababilities and the set of allowed capabilities
 \fB\-\-setcap
 \fBcado\fR computes the miminal set of capability required by itself and sets the file capability of the cado executable.
 .TP
+\fB\-S
+.TQ
+\fB\-\-scado
+launch \fBcado\fR with \fBscado\fR(1) support. \fRcommand\fI must be an absolute pathname and a specific authorization line must 
+appear in the user's scado file.
+.TP
 \fB\-h
 .TQ
 \fB\-\-help
@@ -63,5 +81,6 @@ print a short usage banner and exit.
 .SH SEE ALSO
 \fBcado.conf\fR(5),
 \fBcaprint\fR(1),
+\fBscado\fR(1),
 \fBcapabilities\fR(7)
 

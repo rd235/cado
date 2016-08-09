@@ -37,6 +37,8 @@
 
 #define CADO_CONF CONFDIR "/cado.conf"
 
+/* cado.conf management */
+
 /* groupmatch returns 1 if group belongs to grouplist */
 static int groupmatch (char *group, char **grouplist) {
 	for (;*grouplist; grouplist++) {
@@ -64,10 +66,10 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 	f=fopen(CADO_CONF, "r");
 	if (f) {
 		char *line=NULL;
-		ssize_t len,n=0;
+		size_t n=0;
 		/* set s2argv security, children must drop their capabilities */
 		s2_fork_security=drop_capabilities;
-		while ((len=getline(&line, &n, f)) > 0 && (reqset & ~ok_caps)) {
+		while (getline(&line, &n, f) > 0 && (reqset & ~ok_caps)) {
 			//printf("%s",line);
 			char *scan=line;
 			char *tokencap;
@@ -87,7 +89,6 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 			//printf("UG %s\n",tokenusergroup);
 			tokencondition=strtok_r(NULL, ":\n", &tmptok);
 			//printf("COND %s\n",tokencondition);
-			capset=0;
 			if (capset_from_namelist(tokencap, &capset) < 0)
 				continue;
 			if (user_groups == NULL) {

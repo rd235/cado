@@ -25,32 +25,41 @@
 #include <getopt.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <limits.h>
+#include <inttypes.h>
+
 #include <pam_check.h>
 #include <get_user_groups.h>
 #include <capset_from_namelist.h>
 #include <read_conf.h>
 #include <set_ambient_cap.h>
-#include <inttypes.h>
+#include <cado_scado_check.h>
 
+/* print a capset (in case of -v, verbose mode). */
 static void printcapset(uint64_t capset, char *indent) {
+	if (capset) {
 	cap_value_t cap;
 	int count=0;
 	for (cap = 0; cap <= CAP_LAST_CAP; cap++) {
 		if (capset & (1ULL << cap)) {
 			count ++;
-			printf("%s%2d %016llx %s\n",indent,cap,1ULL<<cap,cap_to_name(cap));
+			printf("%s%2d %016" PRIx64 " %s\n", indent, cap, UINT64_C(1) << cap, cap_to_name(cap));
 		}
 	}
 	if (count > 1)
-		printf("%s   %016" PRIx64 "\n",indent,capset);
+		printf("%s   %016" PRIx64 "\n", indent, capset);
+	} else
+		printf("%s   %016" PRIx64 " NONE\n",indent, UINT64_C(0));
 }
 
-#define OPTSTRING "hqvs"
+/* command line args management */
+#define OPTSTRING "hqvsS"
 struct option long_options[]={
 	{"help", no_argument, NULL, 'h'},
 	{"quiet", no_argument, NULL, 'q'},
 	{"verbose", no_argument, NULL, 'v'},
 	{"setcap", no_argument, NULL, 'v'},
+	{"scado", no_argument, NULL, 'S'}
 };
 
 void usage(char *progname) {
@@ -60,6 +69,7 @@ void usage(char *progname) {
 	fprintf(stderr,"  -h, --help         display help message and exit\n");
 	fprintf(stderr,"  -q, --quiet        do not display warnings, do what it is allowed\n");
 	fprintf(stderr,"  -v, --verbose      generate extra output\n");
+	fprintf(stderr,"  -S, --scado        check scado pre-authorization for scripts\n");
 	fprintf(stderr,"  -s, --setcap       set the minimun caps for %s (root access)\n",progname);
 	exit(1);
 }
@@ -69,11 +79,14 @@ int main(int argc, char*argv[])
 	char *progname=basename(argv[0]);
 	char **user_groups=get_user_groups();
 	uint64_t okcaps;
-	uint64_t reqcaps=0;
+	uint64_t reqcaps;
 	uint64_t grantcap=0;
 	int verbose=0;
 	int quiet=0;
 	int setcap=0;
+	int scado=0;
+	int pam_check_required = 1;
+	char copy_path[PATH_MAX] = "";
 
 	while (1) {
 		int c=getopt_long(argc, argv, OPTSTRING, long_options, NULL);
@@ -88,12 +101,16 @@ int main(int argc, char*argv[])
 								break;
 			case 's': setcap=1;
 								break;
+			case 'S': scado=1;
+								break;
 		}
 	}
 
+	/* setcap mode: cado sets the minimal required set of capability required by itself */
+
 	if (setcap) {
-		if (geteuid() != 0) {
-			fprintf(stderr, "setcap requires root access\n");
+		if (setuid(0) != 0 || geteuid() != 0) {
+			fprintf(stderr, "setcap requires root access %d\n",geteuid());
 			exit(2);
 		}
 		okcaps = get_authorized_caps(NULL, -1LL);
@@ -109,6 +126,12 @@ int main(int argc, char*argv[])
 		exit(0);
 	}
 		
+	if (user_groups == NULL) {
+		fprintf(stderr, "No passwd entry for user '%d'\n",getuid());
+		exit(2);
+	}
+
+	/* -v without any other parameter: cado shows the set of ambient capabilities allowed for the current user/group */
 	if (verbose && (argc == optind)) {
 		okcaps=get_authorized_caps(user_groups, -1LL);
 		printf("Allowed ambient capabilities:\n");
@@ -119,21 +142,40 @@ int main(int argc, char*argv[])
 	if (argc - optind < 2)
 		usage(progname);
 
-	if (capset_from_namelist(argv[optind], &reqcaps)) 
+	/* parse the set of requested capabilities */
+	if (capset_from_namelist(argv[optind], &reqcaps)) {
+		fprintf(stderr, "List of capabilities: syntax error\n");
 		exit(2);
+	}
 
 	if (verbose) {
 		printf("Requested ambient capabilities:\n");
 		printcapset(reqcaps, "  ");
 	}
 
+	/* check if the capability requested are also allowed */
 	okcaps=get_authorized_caps(user_groups, reqcaps);
 
+	optind++;
+
+	/* scado mode, check if there is a pre-authorization for the command */
+	if (scado) {
+		uint64_t scado_caps = cado_scado_check(user_groups[0], argv[optind], copy_path);
+		if (verbose) {
+			printf("Scado permitted capabilities for %s:\n", argv[optind]);
+			printcapset(scado_caps, "  ");
+		}
+		okcaps &= scado_caps;
+		pam_check_required = 0;
+	} 
+
+	/* the user requested capabilities which are not allowed */
 	if (reqcaps & ~okcaps) {
 		if (verbose) {
 			printf("Unavailable ambient capabilities:\n");
 			printcapset(reqcaps & ~okcaps, "  ");
 		}
+		/* if not in "quiet" mode, do not complaint */
 		if (!quiet) {
 			fprintf(stderr,"%s: Permission denied\n",progname);
 			exit(2);
@@ -142,17 +184,25 @@ int main(int argc, char*argv[])
 
 	grantcap = reqcaps & okcaps;
 
-	optind++;
+	/* revert setgid mode */
+	setuid(getuid());
 
-	if (pam_check(user_groups[0]) != 0) {
+	/* ask for pam authorization (usually password) if required */
+	if (pam_check_required && pam_check(user_groups[0]) != PAM_SUCCESS) {
 		fprintf(stderr,"%s: Authentication failure\n",progname);
 		exit(2);
 	}
-	set_ambient_cap(grantcap);
+
+	/* okay: grantcap can be granted, do it! */
+	if (grantcap)
+		set_ambient_cap(grantcap);
+
 	if (verbose && (reqcaps & ~okcaps)) {
 			printf("Granted ambient capabilities:\n");
 			printcapset(grantcap, "  ");
 	}
-	execvp(argv[optind],argv+optind);
+
+	/* exec the command in the new ambient capability environment */
+	execvp(copy_path[0] == 0 ? argv[optind] : copy_path, argv+optind);
 	exit(2);
 }

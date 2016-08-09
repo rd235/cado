@@ -1,5 +1,5 @@
 /* 
- * cado: execute a command in a capability ambient
+ * caprint: print the set of ambient capability of a process.
  * Copyright (C) 2016  Renzo Davoli, University of Bologna
  * 
  * This file is part of cado.
@@ -48,7 +48,7 @@ uint64_t get_capamb(pid_t pid) {
 			status++;
 			if (status == target) {
 				int fields = 0;
-				if ((fields = fscanf(f,"%" PRIx64 "",&capamb)) != 1)
+				if ((fields = fscanf(f,"%" SCNx64 "",&capamb)) != 1)
 					fprintf(stderr, "WARNING: fscanf on %s return %d fields.\n", filename, fields);
 				break;
 			}
