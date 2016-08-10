@@ -19,6 +19,7 @@
  *
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,6 +43,8 @@
 #include <scado_parse.h>
 #include <compute_digest.h>
 #include <config.h>
+
+#include <s2argv.h>
 
 #define EDIT_PAM_MAXTRIES 3
 
@@ -185,7 +188,7 @@ int scado_edit(char *progname, char *username, char *program_path) {
 	char tmp_file[PATH_MAX];
 	char scado_file[PATH_MAX];
 	char *editor;
-	char *argv[]={NULL, tmp_file, NULL};
+	char *args = NULL;
 	int status = 0;
 	pid_t pid, xpid;
 	char digest_before[DIGESTSTRLEN + 1];
@@ -223,7 +226,6 @@ int scado_edit(char *progname, char *username, char *program_path) {
 			((editor = getenv("EDITOR")) == NULL || *editor == '\0')) {
 		editor = EDITOR;
 	}
-	argv[0] = editor;
 
 	switch (pid = fork()) {
 		case -1:
@@ -239,7 +241,14 @@ int scado_edit(char *progname, char *username, char *program_path) {
 				perror("setuid(getuid())");
 				exit(ERROR_EXIT);
 			}
-			execvp(argv[0], argv);
+
+			asprintf(&args, "%s %s", editor, tmp_file);
+
+			if (args == NULL) {
+				exit(ERROR_EXIT);
+			}
+
+			execsp(args);
 			perror(editor);
 			exit(ERROR_EXIT);
 		default:
