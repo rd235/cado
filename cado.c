@@ -53,10 +53,10 @@ static void printcapset(uint64_t capset, char *indent) {
 }
 
 /* command line args management */
-#define OPTSTRING "hqvsS"
+#define OPTSTRING "hfvsS"
 struct option long_options[]={
 	{"help", no_argument, NULL, 'h'},
-	{"quiet", no_argument, NULL, 'q'},
+	{"force", no_argument, NULL, 'f'},
 	{"verbose", no_argument, NULL, 'v'},
 	{"setcap", no_argument, NULL, 'v'},
 	{"scado", no_argument, NULL, 'S'}
@@ -67,7 +67,7 @@ void usage(char *progname) {
 	fprintf(stderr,"usage: %s OPTIONS capability_list command [args]\n\n",progname);
 	fprintf(stderr,"Options:\n");
 	fprintf(stderr,"  -h, --help         display help message and exit\n");
-	fprintf(stderr,"  -q, --quiet        do not display warnings, do what it is allowed\n");
+	fprintf(stderr,"  -f, --force        do not display warnings, do what it is allowed\n");
 	fprintf(stderr,"  -v, --verbose      generate extra output\n");
 	fprintf(stderr,"  -S, --scado        check scado pre-authorization for scripts\n");
 	fprintf(stderr,"  -s, --setcap       set the minimun caps for %s (root access)\n",progname);
@@ -82,7 +82,7 @@ int main(int argc, char*argv[])
 	uint64_t reqcaps;
 	uint64_t grantcap=0;
 	int verbose=0;
-	int quiet=0;
+	int force=0;
 	int setcap=0;
 	int scado=0;
 	int pam_check_required = 1;
@@ -97,7 +97,7 @@ int main(int argc, char*argv[])
 								break;
 			case 'v': verbose=1;
 								break;
-			case 'q': quiet=1;
+			case 'f': force=1;
 								break;
 			case 's': setcap=1;
 								break;
@@ -175,8 +175,8 @@ int main(int argc, char*argv[])
 			printf("Unavailable ambient capabilities:\n");
 			printcapset(reqcaps & ~okcaps, "  ");
 		}
-		/* if not in "quiet" mode, do not complaint */
-		if (!quiet) {
+		/* if not in "force" mode, do not complaint */
+		if (!force) {
 			fprintf(stderr,"%s: Permission denied\n",progname);
 			exit(2);
 		}
