@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <fcntl.h>
 #include <sys/uio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -200,16 +201,30 @@ static void scado_update_line(FILE *fout, struct scado_line *line, char *inpath)
 	 path == "" -> all
 */
 void scado_copy_update(char *inpath, char *outpath, char *path) {
-	FILE *fin = fopen(inpath, "r");
+	FILE *fin = NULL;
 	mode_t oldmask;
 	FILE *fout;
 	char *line;
 	size_t len=0;
 	int lineno=0;
 	ssize_t n;
+
+	int fdin;
+	struct stat l_stats;
+
+	/* Symlinks check */
+	if ((fdin = open(inpath, O_RDONLY | O_NOFOLLOW)) < 0) {
+		return;
+	}
+
+	if (fstat(fdin, &l_stats) || l_stats.st_mode == S_IFLNK) {
+		return;
+	}
+
+	fin = fdopen(fdin, "r");
 	if (fin == NULL)
 		return;
-	oldmask = umask(027);
+	oldmask = umask(077);
 	fout = fopen(outpath, "w");
 	umask(oldmask);
 	if (fout == NULL) {
@@ -219,7 +234,7 @@ void scado_copy_update(char *inpath, char *outpath, char *path) {
 	while ((n = getline(&line, &len, fin)) > 0) {
 		struct scado_line scado_line;
 		line[n-1] = 0;
-	 	scado_line = scado_parse(line);
+		scado_line = scado_parse(line);
 		lineno++;
 		scado_syntax_check(outpath, lineno, &scado_line);
 		scado_update_line(fout, &scado_line, path);
