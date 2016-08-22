@@ -67,7 +67,7 @@ void usage(char *progname) {
 	fprintf(stderr,"usage: %s OPTIONS capability_list command [args]\n\n",progname);
 	fprintf(stderr,"Options:\n");
 	fprintf(stderr,"  -h, --help         display help message and exit\n");
-	fprintf(stderr,"  -f, --force        do not display warnings, do what it is allowed\n");
+	fprintf(stderr,"  -f, --force        do not display warnings, do what is allowed\n");
 	fprintf(stderr,"  -v, --verbose      generate extra output\n");
 	fprintf(stderr,"  -S, --scado        check scado pre-authorization for scripts\n");
 	fprintf(stderr,"  -s, --setcap       set the minimun caps for %s (root access)\n",progname);

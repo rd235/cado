@@ -29,7 +29,7 @@
 #include <read_conf.h>
 #include <set_ambient_cap.h>
 #include <capset_from_namelist.h>
-#include <s2argv.h>
+#include <execs.h>
 
 #ifndef CONFDIR
 #define CONFDIR "/etc"
@@ -49,7 +49,7 @@ static int groupmatch (char *group, char **grouplist) {
 	return 0;
 }
 
-/* s2argv security, children must drop their capabilities */
+/* execs security, children must drop their capabilities */
 static int drop_capabilities(void *useless) {
 	return prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
 }
@@ -67,8 +67,8 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 	if (f) {
 		char *line=NULL;
 		size_t n=0;
-		/* set s2argv security, children must drop their capabilities */
-		s2_fork_security=drop_capabilities;
+		/* set execs security, children must drop their capabilities */
+		execs_fork_security=drop_capabilities;
 		while (getline(&line, &n, f) > 0 && (reqset & ~ok_caps)) {
 			//printf("%s",line);
 			char *scan=line;

@@ -44,7 +44,7 @@
 #include <compute_digest.h>
 #include <config.h>
 
-#include <s2argv.h>
+#include <execs.h>
 
 #define EDIT_PAM_MAXTRIES 3
 

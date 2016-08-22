@@ -13,9 +13,9 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 # Checks for libraries.
-AC_CHECK_LIB([s2argv], [s2argv], [],
+AC_CHECK_LIB([execs], [s2argv], [],
 		[
-		AC_MSG_ERROR([Could  not find S2ARGV library (https://github.com/rd235/s2argv-execs)])
+		AC_MSG_ERROR([Could  not find execs library (https://github.com/rd235/s2argv-execs)])
 		])
 
 # Checks for header files.
@@ -26,9 +26,9 @@ AC_CHECK_HEADERS([sys/capability.h],
 AC_CHECK_HEADERS([security/pam_appl.h security/pam_misc.h],
 		[],
 		[AC_MSG_ERROR([missing PAM headers])])
-AC_CHECK_HEADERS([s2argv.h],
+AC_CHECK_HEADERS([execs.h],
 		[],
-		[AC_MSG_ERROR([missing S2ARGV headers])])
+		[AC_MSG_ERROR([missing execs headers])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UID_T
