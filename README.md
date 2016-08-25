@@ -71,9 +71,9 @@ or
 ```
 $ sudo cado -sv
 ```
-(this latter command is verbose and shows the set of capabilties assigned to the capo executable file).
+(this latter command is verbose and shows the set of capabilties assigned to the cado executable file).
 
-using the example configuration file above, capo would be assigned the following capabilities:
+using the example configuration file above, cado would be assigned the following capabilities:
 ```
 $ sudo cado -sv
 Capability needed by cado:
