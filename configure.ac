@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([cado], [0.9.1], [info@v2.cs.unibo.it])
+AC_INIT([cado], [0.9.2], [info@v2.cs.unibo.it])
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AC_CONFIG_SRCDIR([pam_check.h])
 AC_CONFIG_HEADERS([config.h])
