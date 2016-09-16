@@ -17,6 +17,10 @@ AC_CHECK_LIB([execs], [s2argv], [],
 		[
 		AC_MSG_ERROR([Could  not find execs library (https://github.com/rd235/s2argv-execs)])
 		])
+AC_CHECK_LIB([mhash], [mhash_init], [],
+		[
+		AC_MSG_ERROR([Could  not find mhash library.])
+		])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stdint.h stdlib.h string.h unistd.h])
@@ -29,6 +33,9 @@ AC_CHECK_HEADERS([security/pam_appl.h security/pam_misc.h],
 AC_CHECK_HEADERS([execs.h],
 		[],
 		[AC_MSG_ERROR([missing execs headers])])
+AC_CHECK_HEADERS([mhash.h],
+		[],
+		[AC_MSG_ERROR([missing mhash headers])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UID_T
