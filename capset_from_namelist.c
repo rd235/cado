@@ -55,8 +55,14 @@ int capset_from_namelist(char *namelist, uint64_t *capset) {
 	char *onecap;
 	char *tmptok;
 	char *spacetok;
+
+	size_t namelistlen = strlen(namelist) + 1;
+	char namelist_cpy[namelistlen];
+	char *namelist_ptr = namelist_cpy;
 	*capset = 0;
-	for (; (onecap = strtok_r(namelist,",",&tmptok)) != NULL; namelist = NULL)
+
+	strncpy(namelist_ptr, namelist, namelistlen);
+	for (; (onecap = strtok_r(namelist_ptr,",",&tmptok)) != NULL; namelist_ptr = NULL)
 		rv |= addcap(strtok_r(onecap," \t",&spacetok), capset);
 	return rv;
 }
