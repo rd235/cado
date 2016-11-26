@@ -1,0 +1,30 @@
+.TH CADROP 1 "November 26, 2016" "VirtualSquare Labs"
+.SH NAME
+cadrop \- Capability Ambient Drop
+.SH SYNOPSIS
+.B cadrop
+[
+.I capability_list
+[
+.I command
+[
+.I args
+]
+]
+]
+
+.SH DESCRIPTION
+Cadrop permits to drop (ambient) capabilities.
+
+Cadrop launches the command indicated as a parameter ($SHELL if omitted) dropping all the capabilities 
+listed in the capability_list.
+
+If the capability_list is also omitted or it matches one of the string "all" or "-", cadrop drops all the capabilities.
+
+.SH SEE ALSO
+\fBcado\fR(1),
+\fBcaprint\fR(1),
+\fBscado\fR(1),
+\fBcado.conf\fR(5),
+\fBcapabilities\fR(7)
+

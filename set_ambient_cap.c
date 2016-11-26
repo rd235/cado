@@ -62,6 +62,32 @@ void set_ambient_cap(uint64_t capset)
 	}
 }
 
+/* drop the capabilities of the capset */
+
+void drop_ambient_cap(uint64_t capset) {
+	cap_value_t cap;
+	cap_t caps=cap_get_proc();
+	for (cap = 0; cap <= CAP_LAST_CAP; cap++) {
+		if (capset & (1ULL << cap)) {
+			if (cap_set_flag(caps, CAP_INHERITABLE, 1, &cap, CAP_CLEAR)) {
+				fprintf(stderr, "Cannot clear inheritable cap %s\n",cap_to_name(cap));
+				exit(2);
+			}
+		}
+	}
+	cap_set_proc(caps);
+	cap_free(caps);
+
+	for (cap = 0; cap <= CAP_LAST_CAP; cap++) {
+		if ((capset & (1ULL << cap))) {
+			if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_LOWER, cap, 0, 0)) {
+				perror("Cannot set cap");
+				exit(1);
+			}
+		}
+	}
+}
+
 /* turn cap_dac_read_search on and off to have "extra" powers only when needed */
 void raise_cap_dac_read_search(void) {
 	cap_value_t cap=CAP_DAC_READ_SEARCH;

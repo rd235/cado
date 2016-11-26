@@ -1,9 +1,13 @@
-bin_PROGRAMS = cado scado caprint
+bin_PROGRAMS = cado cadrop scado caprint
 
 cado_SOURCES = cado.c pam_check.c get_user_groups.c capset_from_namelist.c read_conf.c set_ambient_cap.c \
 							 compute_digest.c file_utils.c scado_parse.c cado_scado_check.c
 
 cado_LDADD = -lpam -lpam_misc -lcap -lmhash
+
+cadrop_SOURCES = cadrop.c capset_from_namelist.c set_ambient_cap.c
+
+cadrop_LDADD = -lcap
 
 caprint_LDADD = -lcap
 
@@ -14,7 +18,7 @@ scado_LDADD = -lpam -lpam_misc -lcap -lmhash
 common_nodist = cado_paths.h
 BUILT_SOURCES = $(common_nodist)
 
-man_MANS = cado.1 caprint.1 scado.1 cado.conf.5
+man_MANS = cado.1 cadrop.1 caprint.1 scado.1 cado.conf.5
 
 install-exec-hook:
 	(useradd -r -s /bin/nologin -g `getent passwd | grep cado | cut -f 3 -d ':'` cado ||\
