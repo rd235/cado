@@ -6,8 +6,8 @@ cado \- Capability Ambient DO
 [
 .I OPTIONS
 ]
-[
 .I capability_list
+[
 .I command
 [
 .I args
@@ -28,6 +28,9 @@ have the same meaning).
 If it is allowed for the current user to run processes with the requested capabilities, the user is asked to
 type their password (or to authenticate themselves as required by pam unless \fB-S\fR or \fB--scado\fR).
 Once the authentication succeeds, \fBcado\fR executes the command granting the required ambient capabilities.
+
+If \fIcommand\fR is omitted cado launch the command specified in the environment
+variable $SHELL.
 
 The file /etc/cado.conf (see \fBcado.conf\fR(5)) defines which capabilities can be provided by \fBcado\fR to each user.
 Cado itself is not a setuid executable, it uses the capability mechanism and it has an option to

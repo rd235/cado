@@ -64,7 +64,7 @@ struct option long_options[]={
 
 void usage(char *progname) {
 	fprintf(stderr,"%s - execute a command in a different capability ambient\n\n",progname);
-	fprintf(stderr,"usage: %s OPTIONS capability_list command [args]\n\n",progname);
+	fprintf(stderr,"usage: %s OPTIONS capability_list [command [args]]\n\n",progname);
 	fprintf(stderr,"Options:\n");
 	fprintf(stderr,"  -h, --help         display help message and exit\n");
 	fprintf(stderr,"  -f, --force        do not display warnings, do what is allowed\n");
@@ -87,6 +87,8 @@ int main(int argc, char*argv[])
 	int scado=0;
 	int pam_check_required = 1;
 	char copy_path[PATH_MAX] = "";
+	char *argvsh[]={getenv("SHELL"),NULL};
+	char **cmdargv;
 
 	while (1) {
 		int c=getopt_long(argc, argv, OPTSTRING, long_options, NULL);
@@ -139,7 +141,7 @@ int main(int argc, char*argv[])
 		exit(0);
 	}
 
-	if (argc - optind < 2)
+	if (argc - optind < 1)
 		usage(progname);
 
 	/* parse the set of requested capabilities */
@@ -158,11 +160,22 @@ int main(int argc, char*argv[])
 
 	optind++;
 
+	if (optind < argc)
+		cmdargv = argv + optind;
+	else {
+		cmdargv = argvsh;
+		if (cmdargv[0] == NULL) {
+			fprintf(stderr, "Error: $SHELL env variable not set.\n");
+			exit(1);
+		}
+	}
+
+
 	/* scado mode, check if there is a pre-authorization for the command */
 	if (scado) {
-		uint64_t scado_caps = cado_scado_check(user_groups[0], argv[optind], copy_path);
+		uint64_t scado_caps = cado_scado_check(user_groups[0], cmdargv[0], copy_path);
 		if (verbose) {
-			printf("Scado permitted capabilities for %s:\n", argv[optind]);
+			printf("Scado permitted capabilities for %s:\n", cmdargv[0]);
 			printcapset(scado_caps, "  ");
 		}
 		okcaps &= scado_caps;
@@ -203,6 +216,6 @@ int main(int argc, char*argv[])
 	}
 
 	/* exec the command in the new ambient capability environment */
-	execvp(copy_path[0] == 0 ? argv[optind] : copy_path, argv+optind);
+	execvp(copy_path[0] == 0 ? cmdargv[0] : copy_path, cmdargv);
 	exit(2);
 }

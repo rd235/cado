@@ -57,7 +57,13 @@ int main(int argc, char *argv[]) {
 			argv+=2;
 			break;
 	}
-	if (*argv == NULL) argv = argvsh;
+	if (*argv == NULL) {
+		if (*argvsh == NULL) {
+			fprintf(stderr, "Error: $SHELL env variable not set.\n");
+			exit(1);
+		}
+		argv = argvsh;
+	}
 	drop_ambient_cap(capset);
 	execvp(argv[0],argv);
 	perror("exec");
