@@ -28,6 +28,7 @@ install-exec-hook:
 	chmod g+s $(DESTDIR)$(bindir)/scado
 	chown cado $(DESTDIR)$(bindir)/cado
 	chmod u+s $(DESTDIR)$(bindir)/cado
+	ldconfig $(DESTDIR)$(libdir)
 	$(DESTDIR)$(bindir)/cado -s
 
 CLEANFILES = cado_paths.h

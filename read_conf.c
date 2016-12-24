@@ -51,7 +51,7 @@ static int groupmatch (char *group, char **grouplist) {
 
 /* execs security, children must drop their capabilities */
 static int drop_capabilities(void *useless) {
-	return prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
+	return drop_all_ambient_cap();
 }
 
 /* get_authorized_caps returns the set of authorized capabilities

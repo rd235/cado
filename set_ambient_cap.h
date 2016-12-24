@@ -6,6 +6,8 @@ void set_ambient_cap(uint64_t capset);
 
 void drop_ambient_cap(uint64_t capset);
 
+int drop_all_ambient_cap(void);
+
 void raise_cap_dac_read_search(void);
 
 void lower_cap_dac_read_search(void);

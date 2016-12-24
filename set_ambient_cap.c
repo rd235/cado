@@ -1,21 +1,21 @@
-/* 
+/*
  * cado: execute a command in a capability ambient
  * Copyright (C) 2016  Renzo Davoli, University of Bologna
- * 
+ *
  * This file is part of cado.
  *
  * Cado is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program; If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,6 +34,9 @@
 #endif
 #ifndef PR_CAP_AMBIENT_LOWER
 #define PR_CAP_AMBIENT_LOWER	3
+#endif
+#ifndef PR_CAP_AMBIENT_CLEAR_ALL
+#define PR_CAP_AMBIENT_CLEAR_ALL    4
 #endif
 
 /* set the ambient capabilities to match the bitmap capset.
@@ -88,6 +91,10 @@ void drop_ambient_cap(uint64_t capset) {
 	}
 }
 
+int drop_all_ambient_cap(void) {
+	  return prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
+}
+
 /* turn cap_dac_read_search on and off to have "extra" powers only when needed */
 void raise_cap_dac_read_search(void) {
 	cap_value_t cap=CAP_DAC_READ_SEARCH;
@@ -102,3 +109,4 @@ void lower_cap_dac_read_search(void) {
 	cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap, CAP_CLEAR);
 	cap_set_proc(caps);
 }
+
