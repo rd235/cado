@@ -51,7 +51,7 @@ masks.  For brevity, the \fBcap_\fR prefix of capabilities names can be omitted
 The \fIsha256_digest_of_the_executable\fR prevents \fITOCTTOU\fR attacks. When a user
 wants to run the file at \fIpath_of_the_executable_file\fR granting it some of
 the capabilities in the \fIcapability_list\fR, the permission is denied if
-its sha256 digest does not match \fIsha256_digest_of_the_executable\R.
+its sha256 digest does not match \fIsha256_digest_of_the_executable\fR.
 
 If there are only two colon (\fB:\fR) separated fields in a line, it means that
 the user trusts a priori the integrity of the file whose pathname is \fIpath_of_the_executable_file\fR.
