@@ -12,13 +12,14 @@ INSTALL:
 
 get the source code, from the root of the source tree run:
 
-$ autoreconf -if
-$ ./configure
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make
 $ sudo make install
 
 It installs two programs in /usr/local/bin: cado and caprint.
-If you want to install the programs in /usr/bin run "./configure --prefix=/usr" instead of "./configure".
+If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
 
 Cado needs a configuration file: /etc/cado.conf with the following syntax:
 * lines beginning with # are comments
@@ -191,4 +192,3 @@ Granted ambient capabilities:
   12 0000000000001000 cap_net_admin
      0000000000001020
 renzo@eipi:~/tests/cado/pre$kill,net_admin#
-

@@ -13,14 +13,15 @@ INSTALL:
 
 get the source code, from the root of the source tree run:
 ```
-$ autoreconf -if
-$ ./configure
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make
 $ sudo make install
 ```
 
 It installs two programs in /usr/local/bin: cado and caprint.
-If you want to install the programs in /usr/bin run "./configure --prefix=/usr" instead of "./configure".
+If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
 
 Cado needs a configuration file: /etc/cado.conf with the following syntax:
 - lines beginning with # are comments
@@ -83,7 +84,7 @@ Capability needed by cado:
     0000000000001024
 $ /sbin/getcap /usr/local/bin/cado
 /usr/local/bin/cado = cap_dac_read_search,cap_kill,cap_net_admin+p
-``` 
+```
 ---
 
 The syntax of cado is simple:
@@ -98,7 +99,7 @@ $ cado net_admin bash
 Password:
 $
 ```
-  
+
 the user will be requested to authenticate himself. If the user has the right to enable cap_net_admin (from the
 cado.conf configuration file) and he typed in the correct password, cado starts a new shell with the requested
 capability enabled.
@@ -132,7 +133,7 @@ cap_net_admin
 $ caprint -l
  12 0000000000001000 cap_net_admin
 ```
-  
+
 There is an option -p that has been designed to add the current set of ambient capabilities to the shell prompt,
 so it is easier for the user to recognize when a shell has some "extra power", so to avoid errors.
 
@@ -162,7 +163,7 @@ Allowed ambient capabilities:
   5 0000000000000020 cap_kill
  12 0000000000001000 cap_net_admin
     0000000000001020
-  
+
 $ cado -v net_admin,kill bash
   Allowed ambient capabilities:
   5 0000000000000020 cap_kill
@@ -174,12 +175,12 @@ Requested ambient capabilities:
     0000000000001020
 Password:
 ```
-  
+
 It is useful to show which capability/ies cannot be granted:
 ```
 $ cado net_admin,kill,setuid bash
 cado: Permission denied
-  
+
 $ cado -v net_admin,kill,setuid bash
 Allowed ambient capabilities:
   5 0000000000000020 cap_kill
@@ -215,4 +216,4 @@ Granted ambient capabilities:
  12 0000000000001000 cap_net_admin
     0000000000001020
 renzo@host:~/tests/cado/pre$kill,net_admin#
-``` 
+```

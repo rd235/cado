@@ -1,0 +1,8 @@
+execute_process(COMMAND "(useradd -r -s /bin/nologin -g `getent passwd | grep cado | cut -f 3 -d ':'` cado || useradd -r -s /bin/nologin -U cado) || true)")
+execute_process(COMMAND "(mkdir -p ${SPOOL_DIR} ; chown root:cado ${SPOOL_DIR} && chmod 4770 $(SPOOL_DIR))")
+execute_process(COMMAND "chown :cado $(DESTDIR)$(bindir)/scado")
+execute_process(COMMAND "chmod g+s $(DESTDIR)$(bindir)/scado")
+execute_process(COMMAND "chown cado $(DESTDIR)$(bindir)/cado")
+execute_process(COMMAND "chmod u+s $(DESTDIR)$(bindir)/cado")
+execute_process(COMMAND "ldconfig $(DESTDIR)$(libdir)")
+execute_process(COMMAND "$(DESTDIR)$(bindir)/cado -s")
