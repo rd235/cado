@@ -166,10 +166,6 @@ install(CODE "execute_process(
     -P ${PROJECT_SOURCE_DIR}/PostInstall.cmake
 )")
 
-add_custom_target(post_install
-    "${CMAKE_COMMAND}" -P "${PROJECT_SOURCE_DIR}/PostInstall.cmake"
-)
-
 add_custom_target(uninstall
     "${CMAKE_COMMAND}" -P "${PROJECT_SOURCE_DIR}/Uninstall.cmake"
 )
