@@ -1,8 +1,11 @@
-execute_process(COMMAND "(useradd -r -s /bin/nologin -g `getent passwd | grep cado | cut -f 3 -d ':'` cado || useradd -r -s /bin/nologin -U cado) || true)")
-execute_process(COMMAND "(mkdir -p ${SPOOL_DIR} ; chown root:cado ${SPOOL_DIR} && chmod 4770 $(SPOOL_DIR))")
-execute_process(COMMAND "chown :cado $(DESTDIR)$(bindir)/scado")
-execute_process(COMMAND "chmod g+s $(DESTDIR)$(bindir)/scado")
-execute_process(COMMAND "chown cado $(DESTDIR)$(bindir)/cado")
-execute_process(COMMAND "chmod u+s $(DESTDIR)$(bindir)/cado")
-execute_process(COMMAND "ldconfig $(DESTDIR)$(libdir)")
-execute_process(COMMAND "$(DESTDIR)$(bindir)/cado -s")
+execute_process(COMMAND bash "-c"
+    "(useradd -r -s /bin/nologin -g `getent passwd | grep cado | cut -f 3 -d ':'` cado || useradd -r -s /bin/nologin -U cado) || true;\
+    mkdir -p /usr/local/var/spool/cado;\
+    chown root:cado /usr/local/var/spool/cado && chmod 4770 /usr/local/var/spool/cado;\
+    chown :cado ${BINDIR}/scado;\
+    chmod g+s ${BINDIR}/scado;\
+    chown cado ${BINDIR}/cado;\
+    chmod u+s ${BINDIR}/cado;\
+    ldconfig ${LIBDIR};\
+    ${BINDIR}/cado -s"
+)
