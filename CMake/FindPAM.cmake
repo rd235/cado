@@ -32,7 +32,7 @@ if (PAM_FOUND)
 	endif (NOT PAM_FIND_QUIETLY)
 else (PAM_FOUND)
 	if (PAM_FIND_REQUIRED)
-		message(FATAL_ERROR "PAM was not found")
+		message(FATAL_ERROR "Could not find PAM library")
 	endif (PAM_FIND_REQUIRED)
 endif (PAM_FOUND)
 

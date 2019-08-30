@@ -23,11 +23,11 @@ endif (PAM_MISC_INCLUDE_DIR AND PAM_MISC_LIBRARY)
 
 if (PAM_MISC_FOUND)
 	if (NOT PAM_MISC_FIND_QUIETLY)
-		message(STATUS "Found PAM_MISC: ${PAM_MISC_LIBRARIES}")
+		message(STATUS "Found PAM misc: ${PAM_MISC_LIBRARIES}")
 	endif (NOT PAM_MISC_FIND_QUIETLY)
 else (PAM_MISC_FOUND)
 	if (PAM_MISC_FIND_REQUIRED)
-		message(FATAL_ERROR "PAM_MISC was not found")
+		message(FATAL_ERROR "Could not find PAM misc library")
 	endif(PAM_MISC_FIND_REQUIRED)
 endif (PAM_MISC_FOUND)
 

@@ -26,11 +26,11 @@ endif (LIBCAP_INCLUDE_DIR AND LIBCAP_LIBRARY)
 
 if (LIBCAP_FOUND)
 	if (NOT LIBCAP_FIND_QUIETLY)
-		message(STATUS "Found LIBCAP: ${LIBCAP_LIBRARY}")
+		message(STATUS "Found cap: ${LIBCAP_LIBRARY}")
 	endif (NOT LIBCAP_FIND_QUIETLY)
 else (LIBCAP_FOUND)
 	if (LIBCAP_FIND_REQUIRED)
-                message(FATAL_ERROR "LIBCAP was not found")
+                message(FATAL_ERROR "Could not find cap library")
 	endif(LIBCAP_FIND_REQUIRED)
 endif (LIBCAP_FOUND)
 

@@ -24,11 +24,11 @@ endif (MHASH_INCLUDE_DIR AND MHASH_LIBRARY)
 
 if (MHASH_FOUND)
 	if (NOT MHASH_FIND_QUIETLY)
-		message(STATUS "Found MHASH: ${MHASH_LIBRARY}")
+		message(STATUS "Found mhash: ${MHASH_LIBRARY}")
 	endif (NOT MHASH_FIND_QUIETLY)
 else (MHASH_FOUND)
 	if (MHASH_FIND_REQUIRED)
-                message(FATAL_ERROR "MHASH was not found")
+                message(FATAL_ERROR "Could not find mhash library")
 	endif(MHASH_FIND_REQUIRED)
 endif (MHASH_FOUND)
 
