@@ -9,7 +9,7 @@ specific (ambient) capabilities.
 
 Cado is more selective than sudo, users can be authorized to have only specific capabilities (and not others).
 
-INSTALL:
+## Install
 
 get the source code, from the root of the source tree run:
 ```
@@ -22,6 +22,41 @@ $ sudo make install
 
 It installs two programs in /usr/local/bin: cado and caprint.
 If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
+
+## Download and creation of debian packets
+
+* prerequisites: cmake, debuild
+
+* clone the git repository
+
+* create the packets:
+
+    ```
+    cd cado
+    ./create_deb.sh newtag
+    ```
+
+    (newtag creates the orig.tar.gz source package)
+
+* Update the packets:
+
+    ```
+    ./create_deb.sh
+    ```
+
+    or
+
+    ```
+    debuild -us -uc
+    ```
+
+* create the official signed packets:
+
+    ```
+    debuild
+    ```
+
+## Configuration
 
 Cado needs a configuration file: /etc/cado.conf with the following syntax:
 - lines beginning with # are comments
