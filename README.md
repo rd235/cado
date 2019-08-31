@@ -23,22 +23,22 @@ $ sudo make install
 It installs two programs in /usr/local/bin: cado and caprint.
 If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
 
-## Download and creation of debian packets
+## Download and creation of debian packet
 
-* prerequisites: cmake, debuild
+Prerequisites: cmake, debuild
 
 * clone the git repository
 
-* create the packets:
+* create the packet:
 
     ```
     cd cado
     ./create_deb.sh newtag
     ```
 
-    (newtag creates the orig.tar.gz source package)
+    (`newtag` creates the orig.tar.gz source package)
 
-* Update the packets:
+* Update the packet:
 
     ```
     ./create_deb.sh
@@ -89,7 +89,7 @@ or exadecimal masks:
 c0: giovanni,@idgroup
 ```
 
-IMPORTANT.
+## IMPORTANT
 Cado has been designed to work using the minimum set of capability required for its services.
 (following the principle of least privilege).
 ```
@@ -120,8 +120,8 @@ Capability needed by cado:
 $ /sbin/getcap /usr/local/bin/cado
 /usr/local/bin/cado = cap_dac_read_search,cap_kill,cap_net_admin+p
 ```
----
 
+## How to use
 The syntax of cado is simple:
 ```
 $ cado [options] set_of_capabilities command [args]
@@ -155,7 +155,7 @@ CapAmb: 0000000000001000
 
 (cap_net_admin is the capability #12, the mask is 0x1000, i.e. 1ULL << 12)
 
----
+## caprint
 
 caprint is a simple program which shows the ambient capabilities of a running program.
 (a pid of a running process can be specified as an optional parameter, otherwise it shows the capabilities
