@@ -8,7 +8,7 @@ Homepage: http://www.virtualsquare.org/
 Vcs-Git: https://github.com/rd235/cado
 
 Package: cado
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends}
 Description: Capability Ambient DO
  Cado permits the delegation of capabilities to users. Cado is a capability
