@@ -3,7 +3,11 @@ Upstream-Name: cado
 Source: https://github.com/rd235/cado
 
 Files: *
-Copyright: 2016-2019 VirtualSquare. Project Leader: Renzo Davoli (renzo@cs.unibo.it)
+Copyright: 2016-2019 Davide Berardi, Renzo Davoli - VirtualSquare/University of Bologna
+License: GPL-2+
+
+Files: debian/*
+Copyright: 2019 Mattia Biondi
 License: GPL-2+
 
 License: GPL-2+
