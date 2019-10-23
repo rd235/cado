@@ -16,4 +16,4 @@ then
 	)
 fi
 
-debuild -uc -us -sa
+debuild -uc -us -sa -b -rfakeroot

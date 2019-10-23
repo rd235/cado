@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eu
+
+bindir=/usr/bin
+
+(useradd -d /nonexistent -r -s /bin/nologin -g `getent passwd | grep cado | cut -f 3 -d ':'` cado || useradd -d /nonexistent -r -s /bin/nologin -U cado) || true;
+mkdir -p /usr/local/var/spool/cado;
+chown root:cado /usr/local/var/spool/cado && chmod 4770 /usr/local/var/spool/cado;
+chown :cado ${bindir}/scado;
+chmod g+s ${bindir}/scado;
+chown cado: ${bindir}/cado;
+chmod u+s ${bindir}/cado;
+${bindir}/cado -s
