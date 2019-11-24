@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project("cado")
+project("cado" C)
 
 set(PACKAGE "cado")
 set(PACKAGE_NAME "cado")
@@ -11,23 +11,19 @@ set(PACKAGE_STRING "cado 0.9.2")
 set(PACKAGE_BUGREPORT "info@v2.cs.unibo.it")
 set(PACKAGE_URL "")
 
-# Add CMake module path.
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 include(GNUInstallDirs)
 include_directories(${PROJECT_SOURCE_DIR})
 
-# Compilation flags to be used when compiling C files.
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
-# Checks for libraries.
 find_package(PAM REQUIRED)
 find_package(PAM_MISC REQUIRED)
 find_package(EXECS REQUIRED)
 find_package(MHASH REQUIRED)
 find_package(LIBCAP REQUIRED)
 
-# Checks for header files.
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
 check_include_file(fcntl.h HAVE_FCNTL_H)
@@ -36,7 +32,6 @@ check_include_file(stdlib.h HAVE_STDLIB_H)
 check_include_file(string.h HAVE_STRING_H)
 check_include_file(unistd.h HAVE_UNISTD_H)
 
-# Checks for typedefs, structures, and compiler characteristics.
 include(CheckTypeSize)
 check_type_size(uid_t SIZEOF_UID_T)
 if (SIZEOF_UID EQUAL "")
@@ -59,7 +54,6 @@ if (SIZEOF_UINT64_T EQUAL "")
         message(STATUS "'uint64_t': identifier not found")
 endif (SIZEOF_UINT64_T EQUAL "")
 
-# Checks for library functions.
 include(CheckFunctionExists)
 check_function_exists(strdup HAVE_STRDUP)
 check_function_exists(strtoull HAVE_STRTOULL)
@@ -70,7 +64,6 @@ else (WITHEDITOR)
         set(EDITOR "/usr/bin/vi")
 endif (WITHEDITOR)
 
-# Set the paths.
 if (NOT SPOOL_DIR)
         set(
                 SPOOL_DIR "${localstatedir}/spool/cado"
