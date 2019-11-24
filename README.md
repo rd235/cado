@@ -23,39 +23,6 @@ $ sudo make install
 It installs two programs in /usr/local/bin: cado and caprint.
 If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
 
-## Download and creation of debian packet
-
-Prerequisites: cmake, debuild
-
-* clone the git repository
-
-* create the packet:
-
-    ```
-    cd cado
-    ./create_deb.sh newtag
-    ```
-
-    (`newtag` creates the orig.tar.gz source package)
-
-* Update the packet:
-
-    ```
-    ./create_deb.sh
-    ```
-
-    or
-
-    ```
-    debuild -us -uc
-    ```
-
-* create the official signed packets:
-
-    ```
-    debuild
-    ```
-
 ## Configuration
 
 Cado needs a configuration file: /etc/cado.conf with the following syntax:
