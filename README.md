@@ -9,18 +9,21 @@ specific (ambient) capabilities.
 
 Cado is more selective than sudo, users can be authorized to have only specific capabilities (and not others).
 
-INSTALL:
+## Install
 
 get the source code, from the root of the source tree run:
 ```
-$ autoreconf -if
-$ ./configure
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make
 $ sudo make install
 ```
 
 It installs two programs in /usr/local/bin: cado and caprint.
-If you want to install the programs in /usr/bin run "./configure --prefix=/usr" instead of "./configure".
+If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
+
+## Configuration
 
 Cado needs a configuration file: /etc/cado.conf with the following syntax:
 - lines beginning with # are comments
@@ -53,7 +56,7 @@ or exadecimal masks:
 c0: giovanni,@idgroup
 ```
 
-IMPORTANT.
+## IMPORTANT
 Cado has been designed to work using the minimum set of capability required for its services.
 (following the principle of least privilege).
 ```
@@ -83,9 +86,9 @@ Capability needed by cado:
     0000000000001024
 $ /sbin/getcap /usr/local/bin/cado
 /usr/local/bin/cado = cap_dac_read_search,cap_kill,cap_net_admin+p
-``` 
----
+```
 
+## How to use
 The syntax of cado is simple:
 ```
 $ cado [options] set_of_capabilities command [args]
@@ -98,7 +101,7 @@ $ cado net_admin bash
 Password:
 $
 ```
-  
+
 the user will be requested to authenticate himself. If the user has the right to enable cap_net_admin (from the
 cado.conf configuration file) and he typed in the correct password, cado starts a new shell with the requested
 capability enabled.
@@ -119,7 +122,7 @@ CapAmb: 0000000000001000
 
 (cap_net_admin is the capability #12, the mask is 0x1000, i.e. 1ULL << 12)
 
----
+## caprint
 
 caprint is a simple program which shows the ambient capabilities of a running program.
 (a pid of a running process can be specified as an optional parameter, otherwise it shows the capabilities
@@ -132,7 +135,7 @@ cap_net_admin
 $ caprint -l
  12 0000000000001000 cap_net_admin
 ```
-  
+
 There is an option -p that has been designed to add the current set of ambient capabilities to the shell prompt,
 so it is easier for the user to recognize when a shell has some "extra power", so to avoid errors.
 
@@ -162,7 +165,7 @@ Allowed ambient capabilities:
   5 0000000000000020 cap_kill
  12 0000000000001000 cap_net_admin
     0000000000001020
-  
+
 $ cado -v net_admin,kill bash
   Allowed ambient capabilities:
   5 0000000000000020 cap_kill
@@ -174,12 +177,12 @@ Requested ambient capabilities:
     0000000000001020
 Password:
 ```
-  
+
 It is useful to show which capability/ies cannot be granted:
 ```
 $ cado net_admin,kill,setuid bash
 cado: Permission denied
-  
+
 $ cado -v net_admin,kill,setuid bash
 Allowed ambient capabilities:
   5 0000000000000020 cap_kill
@@ -215,4 +218,4 @@ Granted ambient capabilities:
  12 0000000000001000 cap_net_admin
     0000000000001020
 renzo@host:~/tests/cado/pre$kill,net_admin#
-``` 
+```
