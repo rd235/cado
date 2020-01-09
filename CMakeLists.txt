@@ -6,7 +6,7 @@ project(cado
     LANGUAGES C)
 
 include(GNUInstallDirs)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_FORTIFY_SOURCE=2 -O2 -Wall -pedantic")
 
 set(LIBS_REQUIRED cap execs mhash pam pam_misc)
 
