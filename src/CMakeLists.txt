@@ -34,11 +34,13 @@ install(
         DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-install(
-        CODE "execute_process(
-                COMMAND ${CMAKE_COMMAND}
-                -DBINDIR=${CMAKE_INSTALL_FULL_BINDIR}
-                -DLIBDIR=${CMAKE_INSTALL_FULL_LIBDIR}
-                -P ${PROJECT_SOURCE_DIR}/PostInstall.cmake
-        )"
-)
+if(NOT DEBUILD)
+        install(
+                CODE "execute_process(
+                        COMMAND ${CMAKE_COMMAND}
+                        -DBINDIR=${CMAKE_INSTALL_FULL_BINDIR}
+                        -DLIBDIR=${CMAKE_INSTALL_FULL_LIBDIR}
+                        -P ${PROJECT_SOURCE_DIR}/PostInstall.cmake
+                )"
+        )
+endif()
