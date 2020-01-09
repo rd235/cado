@@ -24,8 +24,8 @@ else (WITHEDITOR)
 endif (WITHEDITOR)
 
 configure_file(
-        "${PROJECT_SOURCE_DIR}/include/config.h.in"
-        "${PROJECT_SOURCE_DIR}/include/config.h"
+        "include/config.h.in"
+        "include/config.h"
 )
 
 add_subdirectory(man)
