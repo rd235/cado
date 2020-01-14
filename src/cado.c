@@ -198,7 +198,10 @@ int main(int argc, char*argv[])
 	grantcap = reqcaps & okcaps;
 
 	/* revert setgid mode */
-	setuid(getuid());
+	if (setuid(getuid()) < 0) {
+		fprintf(stderr,"%s: setuid failure\n",progname);
+		exit(2);
+	}
 
 	/* ask for pam authorization (usually password) if required */
 	if (pam_check_required && pam_check(user_groups[0]) != PAM_SUCCESS) {

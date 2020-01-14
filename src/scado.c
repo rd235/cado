@@ -97,12 +97,12 @@ static int editor_garbage_collect(char *path) {
 	if(!(childpid = fork())) {
 		/* Child */
 		if(!fork()) {
-			char c = 0;
 			/* Grandchild */
-			if (close(checkpipe[1]) == 0 && setsid() > 0) 
-				read(checkpipe[0], &c, 1);
-			if (c == 0)
-				unlink(path);
+			if (close(checkpipe[1]) == 0 && setsid() > 0) {
+				char c;
+				if (read(checkpipe[0], &c, 1) == 0)
+					unlink(path);
+			}
 			exit(0);
 		} else
 			exit(0);
@@ -115,7 +115,8 @@ static int editor_garbage_collect(char *path) {
 
 static void editor_garbage_collect_do_not_unlink(int fd) {
 	char c = 'K'; // keep it, any other non-null char would fit.
-	write(fd, &c, 1);
+	int n = write(fd, &c, 1);
+	(void) n;
 }
 
 /* command line selectable functions */
@@ -188,7 +189,7 @@ int scado_edit(char *progname, char *username, char *program_path) {
 	char tmp_file[PATH_MAX];
 	char scado_file[PATH_MAX];
 	char *editor;
-	char *args = NULL;
+	char *args;
 	int status = 0;
 	pid_t pid, xpid;
 	char digest_before[DIGESTSTRLEN + 1];
@@ -242,9 +243,7 @@ int scado_edit(char *progname, char *username, char *program_path) {
 				exit(ERROR_EXIT);
 			}
 
-			asprintf(&args, "%s %s", editor, tmp_file);
-
-			if (args == NULL) {
+			if (asprintf(&args, "%s %s", editor, tmp_file) < 0) {
 				exit(ERROR_EXIT);
 			}
 

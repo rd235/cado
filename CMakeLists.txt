@@ -6,7 +6,7 @@ project(cado
     LANGUAGES C)
 
 include(GNUInstallDirs)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_FORTIFY_SOURCE=2 -O2 -Wall -pedantic")
 
 set(LIBS_REQUIRED cap execs mhash pam pam_misc)
 
@@ -24,8 +24,8 @@ else (WITHEDITOR)
 endif (WITHEDITOR)
 
 configure_file(
-        "${PROJECT_SOURCE_DIR}/include/config.h.in"
-        "${PROJECT_SOURCE_DIR}/include/config.h"
+        "include/config.h.in"
+        "include/config.h"
 )
 
 add_subdirectory(man)

@@ -43,7 +43,12 @@ static ssize_t fcompute_digest(int infd, int outfd, char *ascii_digest) {
 
 	while ((n=read(infd,buf,BUFSIZE)) > 0) {
 		mhash(td, buf, n);
-		if (outfd >= 0) write(outfd, buf, n);
+		if (outfd >= 0) {
+			if (write(outfd, buf, n) < 0) {
+				n = -1;
+				break;
+			}
+		}
 		rv += n;
 	}
 
