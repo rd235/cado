@@ -1,17 +1,20 @@
-execute_process(COMMAND bash -c "\
+execute_process(COMMAND bash -euc "\
 	if ! getent group _cado >/dev/null 2>&1; then
 		groupadd \
 			--system \
 			_cado;
 	fi"
 	ERROR_QUIET OUTPUT_QUIET)
-execute_process(COMMAND bash -c "\
+execute_process(COMMAND bash -euc "\
+	# get nologin path
+	PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+	NOLOGIN=\"\$(which nologin)\"
 	if ! getent passwd _cado >/dev/null 2>&1; then
 		useradd \
 			--no-create-home \
 			--home-dir /nonexistent \
 			--system \
-			--shell /sbin/nologin \
+			--shell \"\$NOLOGIN\" \
 			-g _cado \
 			_cado;
 	fi"
