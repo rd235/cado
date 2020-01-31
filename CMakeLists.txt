@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 project(cado
-    VERSION 0.9.2
+    VERSION 0.9.4
     DESCRIPTION "Capability Ambient DO. Provide users just the capabilities they need."
     HOMEPAGE_URL "https://github.com/rd235/cado"
     LANGUAGES C)
