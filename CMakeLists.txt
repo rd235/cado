@@ -23,11 +23,8 @@ else (WITHEDITOR)
         set(EDITOR "/usr/bin/vi")
 endif (WITHEDITOR)
 
-if(DEBUILD)
-	set(CADO_SPOOL_DIR "/var/spool/cado")
-else(DEBUILD)
-	set(CADO_SPOOL_DIR "/usr/local/var/spool/cado")
-endif(DEBUILD)
+# Spool dir for scado files
+set(CADO_SPOOL_DIR "/usr/local/var/spool/cado")
 
 configure_file(
         "include/config.h.in"

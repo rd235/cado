@@ -10,7 +10,7 @@ foreach(file ${files})
         message(STATUS "Removing file: '${file}'")
 
         execute_process(
-            COMMAND bash "-c" "rm ${file}"
+            COMMAND rm "${file}"
             OUTPUT_VARIABLE remove_file
         )
 
@@ -24,7 +24,7 @@ endforeach(file)
 
 message(STATUS "Removing user: '_cado'")
 execute_process(
-    COMMAND bash "-c" "userdel _cado"
+    COMMAND userdel _cado
     OUTPUT_VARIABLE remove_user
 )
 if(${remove_user})
@@ -33,7 +33,7 @@ endif()
 
 message(STATUS "Removing folder: '${CADO_SPOOL_DIR}'")
 execute_process(
-    COMMAND bash "-c" "rm -r ${CADO_SPOOL_DIR}"
+    COMMAND rm -r "${CADO_SPOOL_DIR}"
     OUTPUT_VARIABLE remove_spool_folder
 )
 if("${remove_spool_folder}")
