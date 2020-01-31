@@ -11,7 +11,7 @@ execute_process(COMMAND bash -c "\
 			--no-create-home \
 			--home-dir /nonexistent \
 			--system \
-			--shell /bin/nologin \
+			--shell /sbin/nologin \
 			-g _cado \
 			_cado;
 	fi"
