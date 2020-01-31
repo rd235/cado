@@ -40,6 +40,7 @@ if(NOT DEBUILD)
                         COMMAND ${CMAKE_COMMAND}
                         -DBINDIR=${CMAKE_INSTALL_FULL_BINDIR}
                         -DLIBDIR=${CMAKE_INSTALL_FULL_LIBDIR}
+                        -DCADO_SPOOL_DIR=${CADO_SPOOL_DIR}
                         -P ${PROJECT_SOURCE_DIR}/PostInstall.cmake
                 )"
         )

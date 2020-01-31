@@ -31,11 +31,11 @@ if(${remove_user})
     message(FATAL_ERROR "Failed to remove user: '_cado'.")
 endif()
 
-message(STATUS "Removing folder: '/usr/local/var/spool/cado'")
+message(STATUS "Removing folder: '${CADO_SPOOL_DIR}'")
 execute_process(
-    COMMAND bash "-c" "rm -r /usr/local/var/spool/cado"
+    COMMAND bash "-c" "rm -r ${CADO_SPOOL_DIR}"
     OUTPUT_VARIABLE remove_spool_folder
 )
 if("${remove_spool_folder}")
-    message(FATAL_ERROR "Failed to remove folder: '/usr/local/var/spool/cado'.")
+    message(FATAL_ERROR "Failed to remove folder: '${CADO_SPOOL_DIR}'.")
 endif()
