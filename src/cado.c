@@ -58,7 +58,7 @@ struct option long_options[]={
 	{"help", no_argument, NULL, 'h'},
 	{"force", no_argument, NULL, 'f'},
 	{"verbose", no_argument, NULL, 'v'},
-	{"setcap", no_argument, NULL, 'v'},
+	{"setcap", no_argument, NULL, 's'},
 	{"scado", no_argument, NULL, 'S'},
 	{0,0,0,0}
 };
