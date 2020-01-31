@@ -22,13 +22,13 @@ foreach(file ${files})
     endif()
 endforeach(file)
 
-message(STATUS "Removing user: 'cado'")
+message(STATUS "Removing user: '_cado'")
 execute_process(
-    COMMAND bash "-c" "userdel cado"
+    COMMAND bash "-c" "userdel _cado"
     OUTPUT_VARIABLE remove_user
 )
 if(${remove_user})
-    message(FATAL_ERROR "Failed to remove user: 'cado'.")
+    message(FATAL_ERROR "Failed to remove user: '_cado'.")
 endif()
 
 message(STATUS "Removing folder: '/usr/local/var/spool/cado'")
