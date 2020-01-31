@@ -59,7 +59,8 @@ struct option long_options[]={
 	{"force", no_argument, NULL, 'f'},
 	{"verbose", no_argument, NULL, 'v'},
 	{"setcap", no_argument, NULL, 'v'},
-	{"scado", no_argument, NULL, 'S'}
+	{"scado", no_argument, NULL, 'S'},
+	{0,0,0,0}
 };
 
 void usage(char *progname) {
