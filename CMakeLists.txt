@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 project(cado
-	VERSION 0.9.4
+	VERSION 0.9.5
 	DESCRIPTION "Capability Ambient DO. Provide users just the capabilities they need."
 	HOMEPAGE_URL "https://github.com/rd235/cado"
 	LANGUAGES C)
@@ -27,7 +27,7 @@ endif (WITHEDITOR)
 
 # Spool dir for scado files
 set(CADO_SPOOL_DIR
-    "${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/spool/${CMAKE_PROJECT_NAME}")
+	"${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/spool/${CMAKE_PROJECT_NAME}")
 
 configure_file(
 	"include/config.h.in"
