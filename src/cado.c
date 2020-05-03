@@ -71,7 +71,7 @@ void usage(char *progname) {
 	fprintf(stderr,"  -f, --force        do not display warnings, do what is allowed\n");
 	fprintf(stderr,"  -v, --verbose      generate extra output\n");
 	fprintf(stderr,"  -S, --scado        check scado pre-authorization for scripts\n");
-	fprintf(stderr,"  -s, --setcap       set the minimun caps for %s (root access)\n",progname);
+	fprintf(stderr,"  -s, --setcap       set the minimum caps for %s (root access)\n",progname);
 	exit(1);
 }
 
