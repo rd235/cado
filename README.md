@@ -10,8 +10,11 @@ specific (ambient) capabilities.
 Cado is more selective than sudo, users can be authorized to have only specific capabilities (and not others).
 
 ## Install
-
-get the source code, from the root of the source tree run:
+Install prerequisite libraries:
+    
+    $ sudo apt install libpam0g-dev libcap-dev libmhash-dev libexecs-dev
+    
+Get the source code, from the root of the source tree run:
 ```
 $ mkdir build
 $ cd build
