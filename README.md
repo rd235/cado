@@ -24,7 +24,7 @@ $ sudo make install
 ```
 
 It installs two programs in /usr/local/bin: cado and caprint.
-If you want to install the programs in /usr/bin run "cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr" instead of "cmake ..".
+If you want to install the programs in /usr/bin run "cmake .. -DCMAKE\_INSTALL\_PREFIX:PATH=/usr" instead of "cmake ..".
 
 ## Configuration
 
@@ -32,7 +32,7 @@ Cado needs a configuration file: /etc/cado.conf with the following syntax:
 - lines beginning with # are comments
 - all the other lines have two fields separated by :, the first field is a capability or a list of
 capabilities, the second field is a list of users or groups (group names have @ as a prefix).
-Capabilities can be written with or without the cap_ prefix (net_admin means cap_net_admin).
+Capabilities can be written with or without the cap\_ prefix (net\_admin means cap\_net\_admin).
 
 Example of /etc/cado.conf file:
 ```
@@ -44,8 +44,8 @@ cap_kill: renzo
 ```
 
 The file above allows the user renzo and all the members of the group named netadmin to run programs
-neeeding the cap_net_admin capability.
-The user renzo can also run programs requiring cap_kill.
+neeeding the cap\_net\_admin capability.
+The user renzo can also run programs requiring cap\_kill.
 The file /etc/cado.conf can be owned by root and have no rw permission for users.
 
 
@@ -97,7 +97,7 @@ The syntax of cado is simple:
 $ cado [options] set_of_capabilities command [args]
 ```
 
-for example if the user renzo wants to run a shell having the cap_net_admin capability enabled he can type
+for example if the user renzo wants to run a shell having the cap\_net\_admin capability enabled he can type
 the following command:
 ```
 $ cado net_admin bash
@@ -105,11 +105,11 @@ Password:
 $
 ```
 
-the user will be requested to authenticate himself. If the user has the right to enable cap_net_admin (from the
+the user will be requested to authenticate himself. If the user has the right to enable cap\_net\_admin (from the
 cado.conf configuration file) and he typed in the correct password, cado starts a new shell with the requested
 capability enabled.
 
-It is possible define the set_of_capabilities using a list of capabilities (with or without the cap_prefix)
+It is possible define the set\_of\_capabilities using a list of capabilities (with or without the cap\_prefix)
 or exadecimal masks.
 
 In the new shell the user can do all the operations permitted by the enabled capabilities,
@@ -123,7 +123,7 @@ $ grep CapAmb /proc/$$/status
 CapAmb: 0000000000001000
 ```
 
-(cap_net_admin is the capability #12, the mask is 0x1000, i.e. 1ULL << 12)
+(cap\_net\_admin is the capability #12, the mask is 0x1000, i.e. 1ULL << 12)
 
 ## caprint
 
@@ -142,7 +142,7 @@ $ caprint -l
 There is an option -p that has been designed to add the current set of ambient capabilities to the shell prompt,
 so it is easier for the user to recognize when a shell has some "extra power", so to avoid errors.
 
-In .bashrc or .bash_profile (or in their system-side counterparts in /etc) it is possible to set rules like
+In .bashrc or .bash\_profile (or in their system-side counterparts in /etc) it is possible to set rules like
 the followings:
 ```
 if which caprint >&/dev/null ; then
