@@ -1,21 +1,21 @@
-/* 
+/*
  * cado: execute a command in a capability ambient
  * Copyright (C) 2016  Renzo Davoli, University of Bologna
- * 
+ *
  * This file is part of cado.
  *
  * Cado is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program; If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -96,7 +96,7 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 			if (user_groups == NULL) {
 				ok_caps |= capset;
 				continue;
-			} 
+			}
 			//printf("CAP %s %d\n",tok,thiscap);
 			while ((tok=strtok_r(tokenusergroup, ",\n ",&tmptok)) != NULL) {
 				//printf("XX %s\n",tok);
@@ -113,7 +113,12 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 			}
 			if (usermatch) {
 				if (tokencondition) {
-					if (system_execsa(tokencondition) == 0)
+					if
+#if defined(EXECS_SOVERSION) && EXECS_SOVERSION > 0
+						(system_execsqa(tokencondition) == 0)
+#else
+						(system_execsa(tokencondition) == 0)
+#endif
 						ok_caps |= capset;
 				} else
 					ok_caps |= capset;
