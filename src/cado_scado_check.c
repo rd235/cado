@@ -111,14 +111,23 @@ static int copy_and_check_digest(const char *path, char *digest, char *newpath) 
 			if (close(gc_pipe[0]) || close(gp_pipe[1]) || setsid() < 0 || signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 				exit(-1);
 
+			gid_t savegid = getegid();
+			if (setegid(getgid()) < 0) {
+				perror("copytemp setegid to real gid");
+				exit(-1);
+			}
 			if (copytemp_digest(path, newpath, newdigest) < 0) {
 				perror("copytemp_hash");
+				exit(-1);
+			}
+			if (setegid(savegid) < 0) {
+				perror("copytemp restore setegid");
 				exit(-1);
 			}
 
 			//debug only
 			//printf("GS %s\n%s\n%s\n", newpath,digest,newdigest);
-			if (chmod(newpath, 00611) < 0)
+			if (chmod(newpath, 00610) < 0)
 				goto end;
 
 			if (strcmp(digest,newdigest) == 0) {
