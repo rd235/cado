@@ -1,6 +1,6 @@
 /* 
  * cado: execute a command in a capability ambient
- * Copyright (C) 2016  Renzo Davoli, University of Bologna
+ * Copyright (C) 2016-2025  Renzo Davoli, University of Bologna
  * 
  * This file is part of cado.
  *
@@ -19,6 +19,7 @@
  *
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,6 +35,18 @@
 #include <read_conf.h>
 #include <set_ambient_cap.h>
 #include <cado_scado_check.h>
+#include <least_priv.h>
+
+#if 0
+#include <sys/fsuid.h>
+void printug(char *label) {
+	uid_t ru,eu,su;
+	gid_t rg,eg,sg;
+	getresuid(&ru,&eu,&su);
+	getresgid(&rg,&eg,&sg);
+	printf("%s:  U %d %d %d %d  G %d %d %d %d\n", label, ru,eu,su,setfsuid(-1),rg,eg,sg,setfsgid(-1));
+}
+#endif
 
 /* print a capset (in case of -v, verbose mode). */
 static void printcapset(uint64_t capset, char *indent) {
@@ -53,12 +66,13 @@ static void printcapset(uint64_t capset, char *indent) {
 }
 
 /* command line args management */
-#define OPTSTRING "hfvsS"
+#define OPTSTRING "hfvslS"
 struct option long_options[]={
 	{"help", no_argument, NULL, 'h'},
 	{"force", no_argument, NULL, 'f'},
 	{"verbose", no_argument, NULL, 'v'},
 	{"setcap", no_argument, NULL, 's'},
+	{"leastpriv", no_argument, NULL, 'l'},
 	{"scado", no_argument, NULL, 'S'},
 	{0,0,0,0}
 };
@@ -72,6 +86,7 @@ void usage(char *progname) {
 	fprintf(stderr,"  -v, --verbose      generate extra output\n");
 	fprintf(stderr,"  -S, --scado        check scado pre-authorization for scripts\n");
 	fprintf(stderr,"  -s, --setcap       set the minimum caps for %s (root access)\n",progname);
+	fprintf(stderr,"  -l, --leastpriv    setup least privilege at user level\n");
 	exit(1);
 }
 
@@ -86,10 +101,15 @@ int main(int argc, char*argv[])
 	int force=0;
 	int setcap=0;
 	int scado=0;
+	int leastpriv=0;
 	int pam_check_required = 1;
 	char copy_path[PATH_MAX] = "";
 	char *argvsh[]={getenv("SHELL"),NULL};
 	char **cmdargv;
+	// printug(argv[0]);
+
+	// delete '-' prefix of reloaded user pecific copy of cado (least privilege)
+	if (progname[0] == '-') progname++;
 
 	while (1) {
 		int c=getopt_long(argc, argv, OPTSTRING, long_options, NULL);
@@ -104,18 +124,34 @@ int main(int argc, char*argv[])
 								break;
 			case 's': setcap=1;
 								break;
+			case 'l': leastpriv=1;
+								break;
 			case 'S': scado=1;
 								break;
 		}
 	}
 
+	if (setcap && leastpriv) {
+		fprintf(stderr, "setcap and leastpriv modes are mutually exclusive\n");
+		exit(2);
+	}
+
 	/* setcap mode: cado sets the minimal required set of capability required by itself */
 
-	if (setcap) {
+	if (leastpriv) {
+		if (setuid(0) != 0 || geteuid() != 0) {
+			fprintf(stderr, "leastpriv requires root access %d\n",geteuid());
+			exit(2);
+		}
+		set_self_capability(0);
+		leastpriv_setup(1);
+		exit(0);
+	} else if (setcap) {
 		if (setuid(0) != 0 || geteuid() != 0) {
 			fprintf(stderr, "setcap requires root access %d\n",geteuid());
 			exit(2);
 		}
+		leastpriv_setup(0);
 		okcaps = get_authorized_caps(NULL, -1LL);
 		okcaps |= 1ULL << CAP_DAC_READ_SEARCH;
 		if (verbose) {
@@ -128,11 +164,19 @@ int main(int argc, char*argv[])
 		}
 		exit(0);
 	}
-		
+
+	if (leastpriv_run(argc, argv) != 0) {
+			fprintf(stderr, "least privilege cado error\n");
+			exit(2);
+	}
+
 	if (user_groups == NULL) {
 		fprintf(stderr, "No passwd entry for user '%d'\n",getuid());
 		exit(2);
 	}
+
+	if (argc - optind < 1)
+		usage(progname);
 
 	/* -v without any other parameter: cado shows the set of ambient capabilities allowed for the current user/group */
 	if (verbose && (argc == optind)) {
@@ -141,9 +185,6 @@ int main(int argc, char*argv[])
 		printcapset(okcaps, "  ");
 		exit(0);
 	}
-
-	if (argc - optind < 1)
-		usage(progname);
 
 	/* parse the set of requested capabilities */
 	if (capset_from_namelist(argv[optind], &reqcaps)) {
@@ -198,9 +239,13 @@ int main(int argc, char*argv[])
 
 	grantcap = reqcaps & okcaps;
 
-	/* revert setgid mode */
+	/* revert setuid-setgid mode */
 	if (setuid(getuid()) < 0) {
 		fprintf(stderr,"%s: setuid failure\n",progname);
+		exit(2);
+	}
+	if (setgid(getgid()) < 0) {
+		fprintf(stderr,"%s: setgid failure\n",progname);
 		exit(2);
 	}
 
@@ -221,5 +266,6 @@ int main(int argc, char*argv[])
 
 	/* exec the command in the new ambient capability environment */
 	execvp(copy_path[0] == 0 ? cmdargv[0] : copy_path, cmdargv);
+	perror("exec");
 	exit(2);
 }

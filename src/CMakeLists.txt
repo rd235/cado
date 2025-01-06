@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 add_executable(
 	cado cado.c pam_check.c get_user_groups.c capset_from_namelist.c
 	read_conf.c set_ambient_cap.c compute_digest.c file_utils.c
-	scado_parse.c cado_scado_check.c
+	scado_parse.c cado_scado_check.c least_priv.c
 )
 target_include_directories(cado PRIVATE ${PROJECT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include)
 target_link_libraries(

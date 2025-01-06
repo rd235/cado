@@ -70,6 +70,11 @@ set of requested cababilities and the set of allowed capabilities
 \fB\-\-setcap
 \fBcado\fR computes the miminal set of capability required by itself and sets the file capability of the cado executable.
 .TP
+\fB\-l
+.TQ
+\fB\-\-leastpriv
+\fBcado\fR creates user-specific copies of \fBcado\fR itself. In this way \fBcado\fR gets granted only the capabilities permitted to the user running cado. This option must be used insted of \fB-s\fR or \fB--setcap\R.
+.TP
 \fB\-S
 .TQ
 \fB\-\-scado
