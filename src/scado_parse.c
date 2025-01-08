@@ -224,7 +224,8 @@ void scado_copy_update(char *inpath, char *outpath, char *path) {
 	fin = fdopen(fdin, "r");
 	if (fin == NULL)
 		return;
-	oldmask = umask(077);
+	oldmask = umask(0377);
+	unlink(outpath);
 	fout = fopen(outpath, "w");
 	umask(oldmask);
 	if (fout == NULL) {
@@ -258,6 +259,12 @@ int scado_path_getinfo(char *inpath, const char *path, uint64_t *pcapset, char *
 	int rv = 0;
 	if (fin == NULL)
 		return -1;
+	int fdin = fileno(fin);
+	struct stat st;
+	if (fstat(fdin, &st) < 0)
+		return -1;
+	if (st.st_uid != getuid())
+		return errno = EPERM, -1;
 	while ((n = getline(&line, &len, fin)) > 0) {
 		struct scado_line scado_line;
 		line[n-1] = 0;

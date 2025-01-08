@@ -63,8 +63,6 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 	FILE *f;
 	/* allow environment vars in execs commands */
 	s2argv_getvar=getenv;
-	/* cado.conf is not readble by users. Add the capability to do it */
-	if (user_groups) raise_cap_dac_read_search();
 	f=fopen(CADO_CONF, "r");
 	if (f) {
 		char *line=NULL;
@@ -128,8 +126,6 @@ uint64_t get_authorized_caps(char **user_groups, uint64_t reqset) {
 		if (line)
 			free(line);
 	}
-	/* the capability to read cado.conf is no longer needed */
-	if (user_groups) lower_cap_dac_read_search();
 	return ok_caps;
 }
 

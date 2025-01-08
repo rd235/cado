@@ -94,19 +94,3 @@ void drop_ambient_cap(uint64_t capset) {
 int drop_all_ambient_cap(void) {
 	  return prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0);
 }
-
-/* turn cap_dac_read_search on and off to have "extra" powers only when needed */
-void raise_cap_dac_read_search(void) {
-	cap_value_t cap=CAP_DAC_READ_SEARCH;
-	cap_t caps=cap_get_proc();
-	cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap, CAP_SET);
-	cap_set_proc(caps);
-}
-
-void lower_cap_dac_read_search(void) {
-	cap_value_t cap=CAP_DAC_READ_SEARCH;
-	cap_t caps=cap_get_proc();
-	cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap, CAP_CLEAR);
-	cap_set_proc(caps);
-}
-

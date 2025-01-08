@@ -199,14 +199,17 @@ uint64_t cado_scado_check(const char *username, const char *exe_path, char *new_
 		return 0;
 	}
 
-	raise_cap_dac_read_search();
+	uid_t saveuid = geteuid();
+	if (seteuid(getuid()))
+		return 0;
 	rv = scado_path_getinfo(scado_file, exe_path, &capset, digest);
-	lower_cap_dac_read_search();
+	if (seteuid(saveuid))
+		return 0;
 
 	/* default value: do not run a copy, directly run the command */
 	*new_path = 0;
 	if (rv <= 0) {
-		/* error: no capabilities canbe granted */
+		/* error: no capabilities can be granted */
 		if (rv < 0)
 			perror("error opening scado file");
 		return 0;

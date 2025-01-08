@@ -153,7 +153,6 @@ int main(int argc, char*argv[])
 		}
 		leastpriv_setup(0);
 		okcaps = get_authorized_caps(NULL, -1LL);
-		okcaps |= 1ULL << CAP_DAC_READ_SEARCH;
 		if (verbose) {
 			printf("Capability needed by %s:\n", progname);
 			printcapset(okcaps, "  ");
