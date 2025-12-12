@@ -200,10 +200,10 @@ Unavailable ambient capabilities:
   7 0000000000000080 cap_setuid
 cado: Permission denied
 ```
-It is possible to enable only the allowed capabilities by setting the -q option
-(with or without -v). Using -q cado does not fail.
+It is possible to enable only the allowed capabilities by setting the -f option
+(with or without -v). Using -f cado does not fail.
 ```
-$ cado -qv net_admin,kill,setuid bash
+$ cado -fv net_admin,kill,setuid bash
 Allowed ambient capabilities:
   5 0000000000000020 cap_kill
  12 0000000000001000 cap_net_admin

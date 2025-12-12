@@ -27,6 +27,8 @@
 #include <libgen.h>
 #include <limits.h>
 #include <inttypes.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include <pam_check.h>
 #include <get_user_groups.h>
@@ -46,6 +48,16 @@ void printug(char *label) {
 	printf("%s:  U %d %d %d %d  G %d %d %d %d\n", label, ru,eu,su,setfsuid(-1),rg,eg,sg,setfsgid(-1));
 }
 #endif
+
+int notELF(char *path) {
+	static char tag[4] = {0x7f,'E','L','F'};
+	char buf[4] = {0};
+	int fd = open(path, O_RDONLY);
+	ssize_t rv = read(fd, buf, 4);
+	if (rv != 4 || memcmp(tag, buf,4))
+		return 1;
+	return 0;
+}
 
 /* print a capset (in case of -v, verbose mode). */
 static void printcapset(uint64_t capset, char *indent) {
@@ -173,16 +185,17 @@ int main(int argc, char*argv[])
 		exit(2);
 	}
 
-	if (argc - optind < 1)
-		usage(progname);
-
 	/* -v without any other parameter: cado shows the set of ambient capabilities allowed for the current user/group */
-	if (verbose && (argc == optind)) {
+	if (verbose) {
 		okcaps=get_authorized_caps(user_groups, -1LL);
 		printf("Allowed ambient capabilities:\n");
 		printcapset(okcaps, "  ");
-		exit(0);
+		if (argc == optind)
+			exit(0);
 	}
+
+	if (argc - optind < 1)
+		usage(progname);
 
 	/* parse the set of requested capabilities */
 	if (capset_from_namelist(argv[optind], &reqcaps)) {
@@ -214,6 +227,11 @@ int main(int argc, char*argv[])
 	/* scado mode, check if there is a pre-authorization for the command */
 	if (scado) {
 		uint64_t scado_caps = cado_scado_check(user_groups[0], cmdargv[0], copy_path);
+		if (notELF(copy_path)) {
+			fprintf(stderr,"%s: scado/digest only ELF executable are supported\n",progname);
+			exit(2);
+		}
+
 		if (verbose) {
 			printf("Scado permitted capabilities for %s:\n", cmdargv[0]);
 			printcapset(scado_caps, "  ");

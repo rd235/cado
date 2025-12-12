@@ -242,7 +242,7 @@ void scado_copy_update(char *inpath, char *outpath, char *path) {
 	}
 	fclose(fin);
 	fclose(fout);
-	free(line);
+	if (line) free(line);
 }
 
 /* scan the scado file whose pathname is inpath seeking for the line matching with 'path'
